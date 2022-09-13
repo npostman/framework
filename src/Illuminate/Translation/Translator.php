@@ -43,6 +43,13 @@ class Translator extends NamespacedItemResolver implements TranslatorContract
     protected $loaded = [];
 
     /**
+     * The array of added translation lines.
+     *
+     * @var array
+     */
+    protected $added = [];
+    
+    /**
      * The message selector.
      *
      * @var \Illuminate\Translation\MessageSelector
@@ -195,7 +202,8 @@ class Translator extends NamespacedItemResolver implements TranslatorContract
     {
         $this->load($namespace, $group, $locale);
 
-        $line = Arr::get($this->loaded[$namespace][$group][$locale], $item);
+        $lines = array_replace_recursive($this->loaded, $this->added);
+        $line = Arr::get($lines[$namespace][$group][$locale], $item);
 
         if (is_string($line)) {
             return $this->makeReplacements($line, $replace);
